@@ -1,0 +1,10 @@
+.logo{
+    -fx-image:url("res/img/logo.png");
+}
+.logo-label{
+    -fx-font-weight:bold;
+    -fx-text-fill: gray;
+}
+.application-background {
+    -fx-background-color: white;
+}
