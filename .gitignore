@@ -16,3 +16,5 @@ out/
 superD.iml
 *.log*
 props/superD.properties
+*.bak
+

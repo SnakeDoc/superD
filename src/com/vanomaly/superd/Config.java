@@ -19,7 +19,7 @@ package com.vanomaly.superd;
 public class Config {
     
     // singleton pattern (Initialization on Demand Holder idiom)
-    
+
     private Config() {}
     
     private static class Configuration {

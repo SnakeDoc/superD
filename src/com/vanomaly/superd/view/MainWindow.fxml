@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
+<?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<VBox id="draggableNode" alignment="center" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="710.0" prefHeight="600.0" prefWidth="1000.0" styleClass="application-background" xmlns:fx="http://javafx.com/fxml">
+<VBox id="draggableNode" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="710.0" prefHeight="600.0" prefWidth="1000.0" styleClass="application-background" xmlns:fx="http://javafx.com/fxml">
   <children>
     <AnchorPane id="" pickOnBounds="false" prefHeight="900.0" prefWidth="1000.0">
       <children>
@@ -31,19 +32,20 @@
           <children>
             <AnchorPane prefHeight="100.0" prefWidth="765.0">
               <children>
-                <Label fx:id="targetLabel" styleClass="contrast-label" layoutX="26.0" layoutY="16.0" text="Target(s) :" />
-                <Label fx:id="delimiterLabel" styleClass="contrast-label" layoutX="26.0" layoutY="60.0" text="Delimiter :" />
+                <Label fx:id="targetLabel" layoutX="26.0" layoutY="16.0" styleClass="contrast-label" text="Target(s) :" />
+                <Label fx:id="delimiterLabel" layoutX="26.0" layoutY="60.0" styleClass="contrast-label" text="Delimiter :" />
                 <TextField fx:id="delimiterText" layoutX="92.0" layoutY="56.0" prefWidth="33.0" />
                 <TextField fx:id="targetText" layoutY="11.0" promptText="Click the Add button to get started..." AnchorPane.leftAnchor="92.0" AnchorPane.rightAnchor="4.0" />
-                <Slider fx:id="hashSlider" layoutX="158.0" layoutY="36.0" majorTickUnit="50.0" max="150.0" minorTickCount="0" orientation="VERTICAL" prefHeight="55.0" showTickMarks="true" snapToTicks="true" />
-                <TextField fx:id="hashMethodDescText" editable="false" layoutX="185.0" layoutY="52.0" prefWidth="287.0" promptText="Hash Method Description"/>
-                <Label fx:id="hashMethodLabel" styleClass="contrast-label" layoutX="186.0" layoutY="36.0" text="Hash Method" />
+                <Slider fx:id="hashSlider" layoutX="142.0" layoutY="36.0" majorTickUnit="50.0" max="150.0" minorTickCount="0" orientation="VERTICAL" prefHeight="55.0" showTickMarks="true" snapToTicks="true" />
+                <TextField fx:id="hashMethodDescText" editable="false" layoutX="173.0" layoutY="56.0" prefWidth="287.0" promptText="Hash Method Description" />
+                <Label id="hashMethodLabel" layoutX="174.0" layoutY="36.0" styleClass="contrast-label" text="Hash Method :" />
+                <Label id="hashAlgo" fx:id="hashMethodLabel" layoutX="261.0" layoutY="36.0" styleClass="contrast-label" text="SHA-256" />
               </children>
             </AnchorPane>
             <AnchorPane prefHeight="100.0">
               <children>
-                <Button fx:id="addButton" layoutY="11.0" maxHeight="23.0" maxWidth="108.0" minHeight="23.0" minWidth="108.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="108.0" text="Add" />
-                <Button fx:id="actionButton" layoutX="114.0" layoutY="10.0" maxHeight="80.0" maxWidth="120.0" minHeight="80.0" minWidth="120.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="120.0" text="Dedupe!" />
+                <Button id="addButtonId" fx:id="addButton" layoutY="10.0" maxHeight="24.0" maxWidth="110.0" minHeight="24.0" minWidth="110.0" mnemonicParsing="false" onAction="#handleAddButtonAction" prefHeight="24.0" prefWidth="110.0" styleClass="ActionButtonDefault" text="Add" />
+                <Button id="actionButtonId" fx:id="actionButton" layoutX="114.0" layoutY="10.0" maxHeight="80.0" maxWidth="120.0" minHeight="80.0" minWidth="120.0" mnemonicParsing="false" onAction="#handleActionButtonAction" prefHeight="80.0" prefWidth="120.0" text="Dedupe!" />
               </children>
             </AnchorPane>
           </children>

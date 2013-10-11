@@ -1,10 +1,15 @@
-.logo{
-    -fx-image:url("res/img/logo.png");
+.menu-item:focused {
+     -fx-background-color: #969A9F;
 }
-.logo-label{
-    -fx-font-weight:bold;
-    -fx-text-fill: gray;
+
+button.actionButtonDefault {
+    -fx-background-color: #00FF00; /* Green */
 }
-.application-background {
-    -fx-background-color: white;
+
+button.actionButtonNext {
+    -fx-background-color: #FFFF00; /* Yellow */
+}
+
+button.actionButtonStop {
+    -fx-background-color: #FF0000; /* Red */
 }
