@@ -37,7 +37,7 @@
                 <TextField fx:id="delimiterText" layoutX="92.0" layoutY="56.0" prefWidth="33.0" />
                 <TextField fx:id="targetText" layoutY="11.0" promptText="Click the Add button to get started..." AnchorPane.leftAnchor="92.0" AnchorPane.rightAnchor="4.0" />
                 <Slider fx:id="hashSlider" layoutX="142.0" layoutY="36.0" majorTickUnit="50.0" max="150.0" minorTickCount="0" orientation="VERTICAL" prefHeight="55.0" showTickMarks="true" snapToTicks="true" />
-                <TextField fx:id="hashMethodDescText" editable="false" layoutX="173.0" layoutY="56.0" prefWidth="287.0" promptText="Hash Method Description" />
+                <TextField fx:id="hashMethodDescText" editable="false" layoutX="173.0" layoutY="56.0" prefWidth="588.0" promptText="Hash Method Description" />
                 <Label id="hashMethodLabel" layoutX="174.0" layoutY="36.0" styleClass="contrast-label" text="Hash Method :" />
                 <Label id="hashAlgo" fx:id="hashMethodLabel" layoutX="261.0" layoutY="36.0" styleClass="contrast-label" text="SHA-256" />
               </children>

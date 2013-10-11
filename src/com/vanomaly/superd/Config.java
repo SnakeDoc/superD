@@ -16,8 +16,26 @@
 
 package com.vanomaly.superd;
 
-public class Config {
+import net.snakedoc.jutils.ConfigException;
+
+public enum Config {
     
+    SUPERD("props/default.properties"),
+    LANGUAGE("props/language.properties"),
+    PREFS("props/prefs.properties"),
+    ;
+    
+    Config(String configFile) {
+        INSTANCE = new net.snakedoc.jutils.Config(configFile);
+    }
+    
+    private final net.snakedoc.jutils.Config INSTANCE;
+    
+    public String getString(String key) throws ConfigException {
+        return INSTANCE.getConfig(key);
+    }
+    
+    /*
     // singleton pattern (Initialization on Demand Holder idiom)
 
     private Config() {}
@@ -34,6 +52,7 @@ public class Config {
         return Configuration.INSTANCE;
         
     }
+    */
     
     // singleton pattern (double-check idiom)
 /*

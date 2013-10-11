@@ -16,13 +16,18 @@
 
 package com.vanomaly.superd.controller;
 
+import java.io.File;
+
 import net.snakedoc.jutils.ConfigException;
 
 import com.vanomaly.superd.Config;
+import com.vanomaly.superd.Main;
+import com.vanomaly.superd.view.ThemedStageFactory;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,6 +35,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 /**
  * @author Jason Sipula
@@ -85,6 +92,78 @@ public class MainWindowController {
                 }
             }
         });
+        hashSlider.setValue(initializeSlider());
+        initializeDelimiterText();
+        initializeAddButton();
+    }
+    
+    private void initializeAddButton() {
+        addButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(final ActionEvent event) {
+                DirectoryChooser directoryChooser = new DirectoryChooser();
+                try {
+                    directoryChooser.setTitle(Config.SUPERD.getString("addbutton.directorychooser.title"));
+                } catch (ConfigException e) {
+                    e.printStackTrace();
+                }
+                Stage dialog = null;
+                dialog = ThemedStageFactory.getNewThemedDialogStage();
+                File file = null;
+                if (dialog != null) {
+                    file = directoryChooser.showDialog(dialog);
+                } else {
+                    throw new RuntimeException("Unable to display Window!");
+                }
+                
+                if ("".equals(getTargetText()) || getTargetText() == null) {
+                    setTargetText(file.getAbsolutePath());
+                } else {
+                    appendTargetText(getDelimiterText() + file.getAbsolutePath());
+                }
+            }
+        });
+    }
+    
+    private void initializeDelimiterText() {
+        String prefDelimiter = "";
+        try {
+            prefDelimiter = Config.PREFS.getString("delimiter.pref");
+            if (null == prefDelimiter || "".equals(prefDelimiter)) {
+                this.setDelimiterText(Config.SUPERD.getString("delimiter.default"));
+            } else {
+                this.setDelimiterText(prefDelimiter);
+            }
+        } catch (ConfigException e) {
+        }
+    }
+    
+    private int initializeSlider() {
+        String prefAlgo = "";
+        try {
+            prefAlgo = Config.PREFS.getString("hashalgo.pref");
+            if (null == prefAlgo || "".equals(prefAlgo)) {
+                return hashAlgoString2Int(Config.SUPERD.getString(Config.SUPERD.getString("hashalgo.default")));
+            }
+        } catch (ConfigException e) {
+            e.printStackTrace();
+        }
+        return hashAlgoString2Int(prefAlgo);
+    }
+    
+    private int hashAlgoString2Int(String hashAlgo) {
+        switch(hashAlgo) {
+        case "MD5":
+            return 0;
+        case "SHA-1":
+            return 50;
+        case "SHA-256":
+            return 100;
+        case "SHA-512":
+            return 150;
+        default:
+            return 100;
+        }
     }
     
     /* targetLabel */
@@ -103,6 +182,10 @@ public class MainWindowController {
     
     public void setTargetText(final String targetText) {
         this.targetText.setText(targetText);
+    }
+    
+    public void appendTargetText(final String targetTextAddition) {
+        this.targetText.appendText(targetTextAddition);
     }
     
     /* delimiterLabel */
@@ -170,23 +253,23 @@ public class MainWindowController {
     public void setAndUpdateHashAlgo(final int hashAlgo) throws ConfigException {
         switch(hashAlgo) {
         case 0:
-            setAndUpdateHashAlgo(Config.getInstance().getConfig("hashalgo.md5"));
+            setAndUpdateHashAlgo(Config.SUPERD.getString("hashalgo.md5"));
             break;
         case 50:
-            setAndUpdateHashAlgo(Config.getInstance().getConfig("hashalgo.sha1"));
+            setAndUpdateHashAlgo(Config.SUPERD.getString("hashalgo.sha1"));
             break;
         case 100:
-            setAndUpdateHashAlgo(Config.getInstance().getConfig("hashalgo.sha256"));
+            setAndUpdateHashAlgo(Config.SUPERD.getString("hashalgo.sha256"));
             break;
         case 150:
-            setAndUpdateHashAlgo(Config.getInstance().getConfig("hashalgo.sha512"));
+            setAndUpdateHashAlgo(Config.SUPERD.getString("hashalgo.sha512"));
             break;
         default:
             throw new ConfigException("Non supported algorithm!");
         }
     }
     
-    public void setAndUpdateHashAlgo(final String hashAlgo) {
+    public void setAndUpdateHashAlgo(final String hashAlgo) throws ConfigException {
         setHashAlgo(hashAlgo);
         updateViewHashAlgo();
     }
@@ -199,8 +282,15 @@ public class MainWindowController {
         return MainWindowController.getInstance().CURRENT_HASHALGO;
     }
     
-    private void updateViewHashAlgo() {
-        this.hashMethodLabel.setText(getHashAlgo());
+    private void updateViewHashAlgo() throws ConfigException {
+        this.setHashMethodLabel(getHashAlgo());
+        this.setHashMethodDescText(
+                getHashAlgo().equals(Config.SUPERD.getString("hashalgo.md5")) ? Config.LANGUAGE.getString("hashalgo.description.md5") : 
+                    getHashAlgo().equals(Config.SUPERD.getString("hashalgo.sha1")) ? Config.LANGUAGE.getString("hashalgo.description.sha1") : 
+                        getHashAlgo().equals(Config.SUPERD.getString("hashalgo.sha256")) ? Config.LANGUAGE.getString("hashalgo.description.sha256") :
+                            getHashAlgo().equals(Config.SUPERD.getString("hashalgo.sha512")) ? Config.LANGUAGE.getString("hashalgo.description.sha512") :
+                                        ""
+                );
     }
     
 }

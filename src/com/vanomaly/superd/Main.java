@@ -5,9 +5,7 @@ import com.vanomaly.superd.controller.MainWindowController;
 import insidefx.undecorator.Undecorator;
 import insidefx.undecorator.UndecoratorScene;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 //import javafx.scene.Scene;
@@ -19,7 +17,7 @@ import javafx.stage.WindowEvent;
 
 public class Main extends Application {
     
-    private Stage primaryStage;
+    private Stage stage;
     
     public static void main(String[] args) {
         
@@ -28,9 +26,9 @@ public class Main extends Application {
     }
     
     @Override
-    public void start(final Stage stage) {
+    public void start(final Stage primaryStage) {
         
-        this.primaryStage = stage;
+        this.stage = primaryStage;
         
         Region root = null;
         try {
@@ -83,61 +81,5 @@ public class Main extends Application {
         
         primaryStage.show();
         
-        /*
-        final Undecorator undecorator = new Undecorator(stage, root);
-        undecorator.getStylesheets().add("skin/undecorator.css");
-        
-        Node node = root.lookup("#draggableNode");
-        undecorator.setAsStageDraggable(stage, node);
-        undecorator.setFadeInTransition();
-
-        Scene scene = new Scene(undecorator);
-        
-        scene.setFill(Color.TRANSPARENT);
-        stage.initStyle(StageStyle.TRANSPARENT);
-    */
-        /*
-         * Fade transition on window closing request
-         *//*
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent we) {
-                we.consume();   // Do not hide
-                undecorator.setFadeOutTransition();
-            }
-        });
-        
-        stage.setScene(scene);
-            
-        // set icons here
-            
-        // set title
-            
-        // set close request function
-            
-        // set resizable
-            
-        stage.show();
-        
-        stage.setMinWidth(undecorator.getMinWidth());
-        stage.setMinHeight(undecorator.getMinHeight());
-        */
-        
     }
-    
-    /*``````````````````````````````````````*/
-   /* Forwarding to Application Controller */
-  /*                                      */
- /*``````````````````````````````````````*/
-   @FXML
-   public void handleAddButtonAction(final ActionEvent event) {
-       //MainWindowController.getInstance().handleAddButtonAction(event);
-   }
-   
-   @FXML
-   public void handleActionButtonAction(final ActionEvent event) {
-       //MainWindowController.getInstance().handleActionButtonAction(event);
-       MainWindowController.handleActionButtonAction(event);
-   }
-
 }
