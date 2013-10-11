@@ -13,3 +13,7 @@ button.actionButtonNext {
 button.actionButtonStop {
     -fx-background-color: #FF0000; /* Red */
 }
+
+.tooltip {
+    -fx-background-color: #FBFBFB; /* #969A9F or  #F0F0F0*/
+}
