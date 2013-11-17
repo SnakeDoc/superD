@@ -32,17 +32,21 @@ public enum Config {
     
     private final net.snakedoc.jutils.Config INSTANCE;
     
-    public String getString(String key) throws ConfigException {
-        return INSTANCE.getConfig(key);
+    public String getString(String key) {
+        try {
+            return INSTANCE.getConfig(key);
+        } catch (ConfigException e) {
+            return null;
+        }
     }
     
-    public Integer getInteger(String key) throws ConfigException {
+    public Integer getInteger(String key) {
         try {
             return Integer.valueOf(INSTANCE.getConfig(key));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | ConfigException e) {
             // fix your config
+            return new Integer(null);
         }
-        return new Integer(null);
     }
     
     /*
