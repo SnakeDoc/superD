@@ -105,35 +105,6 @@ public class MainWindowController {
             }
         });
         initializeDelimiterText();
-        initializeAddButton();
-    }
-    
-    private void initializeAddButton() {
-        addButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(final ActionEvent event) {
-                DirectoryChooser directoryChooser = new DirectoryChooser();
-                directoryChooser.setTitle(Config.SUPERD.getString("addbutton.directorychooser.title"));
-                Stage dialog = null;
-                dialog = ThemedStageFactory.getNewThemedDialogStage();
-                File file = null;
-                if (dialog != null) {
-                    file = directoryChooser.showDialog(dialog);
-                } else {
-                    throw new RuntimeException("Unable to display Window!");
-                }
-                
-                if ("".equals(getTargetText()) || getTargetText() == null) {
-                    setTargetText(file.getAbsolutePath());
-                } else {
-                    setDelimiter();
-                    if (isDelimiterChanged() && LAST_DELIMITER != null) {
-                        setTargetText(getTargetText().replaceAll(Pattern.quote(LAST_DELIMITER), CURRENT_DELIMITER));
-                    }
-                    appendTargetText(getDelimiter() + file.getAbsolutePath());
-                }
-            }
-        });
     }
     
     private void refreshDelimiter() {
@@ -272,9 +243,26 @@ public class MainWindowController {
     /* addButton */
     @FXML
     public void handleAddButtonAction(final ActionEvent event) {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle(Config.SUPERD.getString("addbutton.directorychooser.title"));
+        Stage dialog = null;
+        dialog = ThemedStageFactory.getNewThemedDialogStage();
+        File file = null;
+        if (dialog != null) {
+            file = directoryChooser.showDialog(dialog);
+        } else {
+            throw new RuntimeException("Unable to display Window!");
+        }
         
-        // add directory to target text box
-        
+        if ("".equals(getTargetText()) || getTargetText() == null) {
+            setTargetText(file.getAbsolutePath());
+        } else {
+            setDelimiter();
+            if (isDelimiterChanged() && LAST_DELIMITER != null) {
+                setTargetText(getTargetText().replaceAll(Pattern.quote(LAST_DELIMITER), CURRENT_DELIMITER));
+            }
+            appendTargetText(getDelimiter() + file.getAbsolutePath());
+        }
     }
     
     /* actionBUtton */
