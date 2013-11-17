@@ -47,8 +47,10 @@ public class Main extends Application {
         
         final UndecoratorScene undecoratorScene = new UndecoratorScene(primaryStage, root);
         
-        Node node = root.lookup("#draggableNode");
-        undecoratorScene.setAsStageDraggable(primaryStage, node);
+        if (root != null) {
+            Node node = root.lookup("#draggableNode");
+            undecoratorScene.setAsStageDraggable(primaryStage, node);
+        }
         undecoratorScene.setFadeInTransition();
     
         /*
