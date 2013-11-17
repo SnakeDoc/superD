@@ -113,11 +113,7 @@ public class MainWindowController {
             @Override
             public void handle(final ActionEvent event) {
                 DirectoryChooser directoryChooser = new DirectoryChooser();
-                try {
-                    directoryChooser.setTitle(Config.SUPERD.getString("addbutton.directorychooser.title"));
-                } catch (ConfigException e) {
-                    e.printStackTrace();
-                }
+                directoryChooser.setTitle(Config.SUPERD.getString("addbutton.directorychooser.title"));
                 Stage dialog = null;
                 dialog = ThemedStageFactory.getNewThemedDialogStage();
                 File file = null;
@@ -174,26 +170,19 @@ public class MainWindowController {
     
     private void initializeDelimiterText() {
         String prefDelimiter = "";
-        try {
-            prefDelimiter = Config.PREFS.getString("delimiter.pref");
-            if (null == prefDelimiter || "".equals(prefDelimiter)) {
-                this.setDelimiter(Config.SUPERD.getString("delimiter.default"));
-            } else {
-                this.setDelimiter(prefDelimiter);
-            }
-        } catch (ConfigException e) {
+        prefDelimiter = Config.PREFS.getString("delimiter.pref");
+        if (null == prefDelimiter || "".equals(prefDelimiter)) {
+            this.setDelimiter(Config.SUPERD.getString("delimiter.default"));
+        } else {
+            this.setDelimiter(prefDelimiter);
         }
     }
     
     private int initializeSlider() {
         String prefAlgo = "";
-        try {
-            prefAlgo = Config.PREFS.getString("hashalgo.pref");
-            if (null == prefAlgo || "".equals(prefAlgo)) {
-                return hashAlgoString2Int(Config.SUPERD.getString(Config.SUPERD.getString("hashalgo.default")));
-            }
-        } catch (ConfigException e) {
-            e.printStackTrace();
+        prefAlgo = Config.PREFS.getString("hashalgo.pref");
+        if (null == prefAlgo || "".equals(prefAlgo)) {
+            return hashAlgoString2Int(Config.SUPERD.getString(Config.SUPERD.getString("hashalgo.default")));
         }
         return hashAlgoString2Int(prefAlgo);
     }
