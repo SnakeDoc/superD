@@ -17,3 +17,8 @@ button.actionButtonStop {
 .tooltip {
     -fx-background-color: #FBFBFB; /* #969A9F or  #F0F0F0*/
 }
+
+.root {
+    -fx-accent: #969A9F;
+    -fx-focus-color: #969A9F;
+}
