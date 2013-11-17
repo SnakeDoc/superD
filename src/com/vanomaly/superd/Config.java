@@ -21,6 +21,7 @@ import net.snakedoc.jutils.ConfigException;
 public enum Config {
     
     SUPERD("props/default.properties"),
+    DATABASE("props/database.properties"),
     LANGUAGE("props/language.properties"),
     PREFS("props/prefs.properties"),
     ;
@@ -33,6 +34,15 @@ public enum Config {
     
     public String getString(String key) throws ConfigException {
         return INSTANCE.getConfig(key);
+    }
+    
+    public Integer getInteger(String key) throws ConfigException {
+        try {
+            return Integer.valueOf(INSTANCE.getConfig(key));
+        } catch (NumberFormatException e) {
+            // fix your config
+        }
+        return new Integer(null);
     }
     
     /*
