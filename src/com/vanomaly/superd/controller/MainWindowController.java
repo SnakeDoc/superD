@@ -17,11 +17,11 @@
 package com.vanomaly.superd.controller;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 import net.snakedoc.jutils.ConfigException;
 
 import com.vanomaly.superd.Config;
-import com.vanomaly.superd.Main;
 import com.vanomaly.superd.view.ThemedStageFactory;
 
 import javafx.beans.value.ChangeListener;
@@ -63,6 +63,8 @@ public class MainWindowController {
     @FXML private Button actionButton;
     
     private String CURRENT_HASHALGO;
+    private String CURRENT_DELIMITER;
+    private String LAST_DELIMITER;
     
     private MainWindowController() {
     }
@@ -83,8 +85,8 @@ public class MainWindowController {
     private void initialize() {
         hashSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
-            public void changed(ObservableValue<? extends Number> ov,
-                    Number old_val, Number new_val) {
+            public void changed(final ObservableValue<? extends Number> ov,
+                    final Number old_val, final Number new_val) {
                 try {
                     setAndUpdateHashAlgo(new_val.intValue());
                 } catch (ConfigException e) {
@@ -93,6 +95,15 @@ public class MainWindowController {
             }
         });
         hashSlider.setValue(initializeSlider());
+        delimiterText.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> ov,
+                                    final String old_val, final String new_Val) {
+                if (!"".equals(new_Val) && new_Val != null) {
+                    refreshDelimiter();
+                }
+            }
+        });
         initializeDelimiterText();
         initializeAddButton();
     }
@@ -119,10 +130,46 @@ public class MainWindowController {
                 if ("".equals(getTargetText()) || getTargetText() == null) {
                     setTargetText(file.getAbsolutePath());
                 } else {
-                    appendTargetText(getDelimiterText() + file.getAbsolutePath());
+                    setDelimiter();
+                    if (isDelimiterChanged() && LAST_DELIMITER != null) {
+                        setTargetText(getTargetText().replaceAll(Pattern.quote(LAST_DELIMITER), CURRENT_DELIMITER));
+                    }
+                    appendTargetText(getDelimiter() + file.getAbsolutePath());
                 }
             }
         });
+    }
+    
+    private void refreshDelimiter() {
+        if (!"".equals(getTargetText()) && getTargetText() != null) {
+            setDelimiter();
+            if (isDelimiterChanged() && LAST_DELIMITER != null) {
+                setTargetText(getTargetText().replaceAll(Pattern.quote(LAST_DELIMITER), CURRENT_DELIMITER));
+            }
+        }
+    }
+    
+    private boolean isDelimiterChanged() {
+        if (CURRENT_DELIMITER.equals(LAST_DELIMITER))
+            return false;
+        else
+            return true;
+    }
+    
+    public void setDelimiter(final String currentDelimiter) {
+        LAST_DELIMITER = CURRENT_DELIMITER;
+        CURRENT_DELIMITER = currentDelimiter;
+        setDelimiterText(currentDelimiter);
+    }
+    
+    public void setDelimiter() {
+        LAST_DELIMITER = CURRENT_DELIMITER;
+        CURRENT_DELIMITER = getDelimiterText();
+        setDelimiterText(CURRENT_DELIMITER);
+    }
+    
+    public String getDelimiter() {
+        return CURRENT_DELIMITER;
     }
     
     private void initializeDelimiterText() {
@@ -130,9 +177,9 @@ public class MainWindowController {
         try {
             prefDelimiter = Config.PREFS.getString("delimiter.pref");
             if (null == prefDelimiter || "".equals(prefDelimiter)) {
-                this.setDelimiterText(Config.SUPERD.getString("delimiter.default"));
+                this.setDelimiter(Config.SUPERD.getString("delimiter.default"));
             } else {
-                this.setDelimiterText(prefDelimiter);
+                this.setDelimiter(prefDelimiter);
             }
         } catch (ConfigException e) {
         }
@@ -198,11 +245,11 @@ public class MainWindowController {
     }
     
     /* delimiterText */
-    public String getDelimiterText() {
+    private String getDelimiterText() {
         return this.delimiterText.getText();
     }
     
-    public void setDelimiterText(final String delimiterText) {
+    private void setDelimiterText(final String delimiterText) {
         this.delimiterText.setText(delimiterText);
     }
     
@@ -292,5 +339,4 @@ public class MainWindowController {
                                         ""
                 );
     }
-    
 }
