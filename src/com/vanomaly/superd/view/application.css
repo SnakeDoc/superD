@@ -22,3 +22,7 @@ button.actionButtonStop {
     -fx-accent: #969A9F;
     -fx-focus-color: #969A9F;
 }
+
+.table-cell {
+    -fx-alignment: CENTER;
+}

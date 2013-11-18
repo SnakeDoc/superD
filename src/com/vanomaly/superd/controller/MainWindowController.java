@@ -28,20 +28,28 @@ import net.snakedoc.jutils.ConfigException;
 
 import com.vanomaly.superd.Config;
 import com.vanomaly.superd.core.FileScanner;
+import com.vanomaly.superd.core.SimpleFileProperty;
+import com.vanomaly.superd.view.CenteredOverrunStringTableCell;
 import com.vanomaly.superd.view.ThemedStageFactory;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 /**
  * @author Jason Sipula
@@ -49,10 +57,11 @@ import javafx.stage.Stage;
  */
 public class MainWindowController {
     
-    @FXML private TableView table;
-    @FXML private TableColumn fileCol;
-    @FXML private TableColumn hashCol;
-    @FXML private TableColumn sizeCol;
+    @FXML private TableView<SimpleFileProperty> table;
+    @FXML private TableColumn<SimpleFileProperty, String> fileCol;
+    @FXML private TableColumn<SimpleFileProperty, String> hashCol;
+    @FXML private TableColumn<SimpleFileProperty, Double> sizeCol;
+    final private ObservableList<SimpleFileProperty> tableData = FXCollections.observableArrayList();
     
     @FXML private Label targetLabel;
     @FXML private TextField targetText;
@@ -110,6 +119,35 @@ public class MainWindowController {
             }
         });
         initializeDelimiterText();
+        fileCol.setCellValueFactory(
+                new PropertyValueFactory<SimpleFileProperty, String>("path")
+        );
+        fileCol.setCellFactory(
+                new Callback<TableColumn<SimpleFileProperty, String>, TableCell<SimpleFileProperty, String>>() {
+                    @Override
+                    public TableCell<SimpleFileProperty, String> call(TableColumn<SimpleFileProperty, String> t) {
+                        return new CenteredOverrunStringTableCell();
+                    }
+                });
+        hashCol.setCellValueFactory(
+                new PropertyValueFactory<SimpleFileProperty, String>("hash")
+        );
+        hashCol.setCellFactory(
+                new Callback<TableColumn<SimpleFileProperty, String>, TableCell<SimpleFileProperty, String>>() {
+                    @Override
+                    public TableCell<SimpleFileProperty, String> call(TableColumn<SimpleFileProperty, String> t) {
+                        return new CenteredOverrunStringTableCell();
+                    }
+                });
+        sizeCol.setCellValueFactory(
+                new PropertyValueFactory<SimpleFileProperty, Double>("size")
+        );
+        table.setItems(tableData);
+    }
+    
+    public void addTableRow(final SimpleFileProperty data) {
+        tableData.add(data);
+        table.scrollTo(tableData.size() + 1);
     }
     
     private void refreshDelimiter() {
@@ -273,7 +311,10 @@ public class MainWindowController {
     /* actionBUtton */
     @FXML
     public static void handleActionButtonAction(final ActionEvent event) {
-     // perform logical action (start, stop, etc)
+        Task<Integer> task = new Task<Integer>() {
+            @Override
+            protected Integer call() throws Exception {
+        // perform logical action (start, stop, etc)
         FileScanner fileScanner = null;
         try {
             fileScanner = new FileScanner(MainWindowController.getInstance().getHashAlgo());
@@ -293,6 +334,10 @@ public class MainWindowController {
                 e.printStackTrace();
             }
         }
+        return 0;
+            }
+        };
+        new Thread(task).start();
     }
     
     public void setAndUpdateHashAlgo(final int hashAlgo) throws ConfigException {

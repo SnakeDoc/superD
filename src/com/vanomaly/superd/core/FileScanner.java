@@ -30,7 +30,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javafx.application.Platform;
+
 import com.vanomaly.superd.Config;
+import com.vanomaly.superd.controller.MainWindowController;
 
 /**
  * @author Jason Sipula
@@ -52,32 +55,40 @@ public class FileScanner extends SimpleFileVisitor<Path> {
     
     // hash all regular files
     @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
-        if (attr.isRegularFile()) {
-            try {
-                fis = new FileInputStream(file.toString());
-                fc = fis.getChannel();
+    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attr) {
+        try {
+            fis = new FileInputStream(file.toString());
+            fc = fis.getChannel();
+            b = fc.read(bbf);
+            while ((b != -1) && (b != 0)) {
+                bbf.flip();
+                byte[] bytes = new byte[b];
+                bbf.get(bytes);
+                md.update(bytes, 0, b);
+                bbf.clear();
                 b = fc.read(bbf);
-                while ((b != -1) && (b != 0)) {
-                    bbf.flip();
-                    byte[] bytes = new byte[b];
-                    bbf.get(bytes);
-                    md.update(bytes, 0, b);
-                    bbf.clear();
-                    b = fc.read(bbf);
-                }
-                fis.close();
-                byte[] mdbytes = md.digest();
-                hexString = new StringBuilder();
-                for (int i = 0; i < mdbytes.length; i++) {
-                    hexString.append(Integer.toHexString((0xFF & mdbytes[i])));
-                }
-                System.out.printf("%-85s | %,.2f KB | %35s\n", file.toString(), 
-                        new BigDecimal(attr.size()).divide(new BigDecimal(1024)).setScale(2, BigDecimal.ROUND_HALF_UP), 
-                        hexString.toString());
-            } catch (IOException e) {
-                return FileVisitResult.CONTINUE;
             }
+            fis.close();
+            byte[] mdbytes = md.digest();
+            hexString = new StringBuilder();
+            for (int i = 0; i < mdbytes.length; i++) {
+                hexString.append(Integer.toHexString((0xFF & mdbytes[i])));
+            }
+            //System.out.printf("%-85s | %,.2f KB | %35s\n", file.toString(), 
+            //        new BigDecimal(attr.size()).divide(new BigDecimal(1024)).setScale(2, BigDecimal.ROUND_HALF_UP), 
+            //        hexString.toString());
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    MainWindowController.getInstance().addTableRow(
+                            new SimpleFileProperty(file.toString(), 
+                                    hexString.toString(), 
+                                    Double.parseDouble((new BigDecimal(attr.size())
+                                    .divide(new BigDecimal(1024)).setScale(2, BigDecimal.ROUND_HALF_UP)).toString())));
+                }
+            });
+        } catch (IOException e) {
+            return FileVisitResult.CONTINUE;
         }
         return FileVisitResult.CONTINUE;
     }
@@ -86,11 +97,5 @@ public class FileScanner extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult visitFileFailed(Path file, IOException e) {
         return FileVisitResult.CONTINUE;
-    }
-    
-    public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
-        Path dir = Paths.get("C:\\TESTDATA1");
-        FileScanner fileScanner = new FileScanner("MD5");
-        Files.walkFileTree(dir, fileScanner);
     }
 }

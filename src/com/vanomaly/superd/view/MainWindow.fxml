@@ -16,9 +16,9 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
           </columnResizePolicy>
           <columns>
-            <TableColumn minWidth="200.0" text="File" fx:id="fileCol" />
-            <TableColumn minWidth="200.0" text="Hash" fx:id="hashCol" />
-            <TableColumn minWidth="100.0" prefWidth="200.0" text="Size" fx:id="sizeCol" />
+            <TableColumn minWidth="200.0" prefWidth="450.0" text="File" fx:id="fileCol" />
+            <TableColumn minWidth="200.0" prefWidth="450.0" text="Hash" fx:id="hashCol" />
+            <TableColumn minWidth="100.0" maxWidth="350.0" text="Size" fx:id="sizeCol" />
           </columns>
           <placeholder>
             <Label />
