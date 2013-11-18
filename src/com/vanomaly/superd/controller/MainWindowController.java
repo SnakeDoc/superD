@@ -17,17 +17,22 @@
 package com.vanomaly.superd.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Pattern;
 
 import net.snakedoc.jutils.ConfigException;
 
 import com.vanomaly.superd.Config;
+import com.vanomaly.superd.core.FileScanner;
 import com.vanomaly.superd.view.ThemedStageFactory;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -90,7 +95,7 @@ public class MainWindowController {
                 try {
                     setAndUpdateHashAlgo(new_val.intValue());
                 } catch (ConfigException e) {
-                    e.printStackTrace();
+                    // don't care
                 }
             }
         });
@@ -266,12 +271,28 @@ public class MainWindowController {
     }
     
     /* actionBUtton */
-    
+    @FXML
     public static void handleActionButtonAction(final ActionEvent event) {
-        System.out.println("Click!"); System.out.println(MainWindowController.getInstance().getHashSlider() + " " + MainWindowController.getInstance().getHashMethodLabel());
-         
      // perform logical action (start, stop, etc)
-        
+        FileScanner fileScanner = null;
+        try {
+            fileScanner = new FileScanner(MainWindowController.getInstance().getHashAlgo());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        String[] dirs = MainWindowController.getInstance().getTargetText()
+                            .split(MainWindowController.getInstance().getDelimiterText());
+        Path[] paths = new Path[dirs.length];
+        for (int i = 0; i < dirs.length; i++) {
+            paths[i] = Paths.get(dirs[i]);
+        }
+        for (Path path : paths) {
+            try {
+                Files.walkFileTree(path, fileScanner);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     public void setAndUpdateHashAlgo(final int hashAlgo) throws ConfigException {
