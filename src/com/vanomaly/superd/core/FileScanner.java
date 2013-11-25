@@ -70,19 +70,11 @@ public class FileScanner extends SimpleFileVisitor<Path> {
             for (int i = 0; i < mdbytes.length; i++) {
                 hexString.append(Integer.toHexString((0xFF & mdbytes[i])));
             }
-            //System.out.printf("%-85s | %,.2f KB | %35s\n", file.toString(), 
-            //        new BigDecimal(attr.size()).divide(new BigDecimal(1024)).setScale(2, BigDecimal.ROUND_HALF_UP), 
-            //        hexString.toString());
-            //Platform.runLater(new Runnable() {
-            //    @Override
-            //    public void run() {
-                    MainWindowController.getInstance().addTableRow(
-                            new SimpleFileProperty(file.toString(), 
-                                        hexString.toString(), 
-                                        attr.size()
-                                    ));  
-            //    }
-            //});
+            MainWindowController.getInstance().addTableRow(
+                    new SimpleFileProperty(file.toString(), 
+                            hexString.toString(), 
+                            attr.size()
+                            ));  
         } catch (InterruptedException | IOException e) {
             return FileVisitResult.CONTINUE;
         }

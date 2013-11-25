@@ -122,9 +122,14 @@ public class MainWindowController {
             }
         });
         initializeDelimiterText();
+        initializeColumns();
+        table.setItems(tableData);
+    }
+    
+    private void initializeColumns() {
         fileCol.setCellValueFactory(
                 new PropertyValueFactory<SimpleFileProperty, String>("path")
-        );
+                );
         fileCol.setCellFactory(
                 new Callback<TableColumn<SimpleFileProperty, String>, TableCell<SimpleFileProperty, String>>() {
                     @Override
@@ -134,7 +139,7 @@ public class MainWindowController {
                 });
         hashCol.setCellValueFactory(
                 new PropertyValueFactory<SimpleFileProperty, String>("hash")
-        );
+                );
         hashCol.setCellFactory(
                 new Callback<TableColumn<SimpleFileProperty, String>, TableCell<SimpleFileProperty, String>>() {
                     @Override
@@ -144,7 +149,7 @@ public class MainWindowController {
                 });
         sizeCol.setCellValueFactory(
                 new PropertyValueFactory<SimpleFileProperty, String>("size")
-        );
+                );
         sizeCol.setCellFactory(
                 new Callback<TableColumn<SimpleFileProperty,String>, TableCell<SimpleFileProperty, String>>() {
                     @Override
@@ -161,7 +166,6 @@ public class MainWindowController {
             }
             
         });
-        table.setItems(tableData);
     }
     
     public void addTableRow(final SimpleFileProperty data) {
