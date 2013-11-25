@@ -22,11 +22,3 @@ button.actionButtonStop {
     -fx-accent: #969A9F;
     -fx-focus-color: #969A9F;
 }
-
-#sizeCol .table-cell {
-    -fx-alignment: baseline-right;
-}
-
-/*.table-cell {
-    -fx-alignment: CENTER;
-}*/
