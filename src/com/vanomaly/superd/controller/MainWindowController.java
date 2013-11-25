@@ -171,10 +171,11 @@ public class MainWindowController {
                 int j = 0;
                 for (int i = 0; i < origArr.length; i++) {
                     char c = origArr[i];
-                    if (c >= 48 && c <= 57) {
+                    if ((c >= 48 && c <= 57) || (c == 46)) {
                         destArr[j++] = c;
                     }
                 }
+                System.out.println(new String(destArr, 0, j));
                 return new BigDecimal(new String(destArr, 0, j));
             }
             
