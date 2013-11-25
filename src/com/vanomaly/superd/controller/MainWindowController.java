@@ -355,27 +355,27 @@ public class MainWindowController {
         Task<Integer> task = new Task<Integer>() {
             @Override
             protected Integer call() throws Exception {
-        // perform logical action (start, stop, etc)
-        FileScanner fileScanner = null;
-        try {
-            fileScanner = new FileScanner(MainWindowController.getInstance().getHashAlgo());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        String[] dirs = MainWindowController.getInstance().getTargetText()
-                            .split(MainWindowController.getInstance().getDelimiterText());
-        Path[] paths = new Path[dirs.length];
-        for (int i = 0; i < dirs.length; i++) {
-            paths[i] = Paths.get(dirs[i]);
-        }
-        for (Path path : paths) {
-            try {
-                Files.walkFileTree(path, fileScanner);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return 0;
+                // perform logical action (start, stop, etc)
+                FileScanner fileScanner = null;
+                try {
+                    fileScanner = new FileScanner(MainWindowController.getInstance().getHashAlgo());
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+                String[] dirs = MainWindowController.getInstance().getTargetText()
+                        .split(MainWindowController.getInstance().getDelimiterText());
+                Path[] paths = new Path[dirs.length];
+                for (int i = 0; i < dirs.length; i++) {
+                    paths[i] = Paths.get(dirs[i]);
+                }
+                for (Path path : paths) {
+                    try {
+                        Files.walkFileTree(path, fileScanner);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return 0;
             }
         };
         new Thread(task).start();
