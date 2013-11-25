@@ -31,8 +31,8 @@ import net.snakedoc.jutils.ConfigException;
 import com.vanomaly.superd.Config;
 import com.vanomaly.superd.core.FileScanner;
 import com.vanomaly.superd.core.SimpleFileProperty;
-import com.vanomaly.superd.view.BaselineLeftStringCenterOverrunTableCell;
-import com.vanomaly.superd.view.BaselineRightStringTableCell;
+import com.vanomaly.superd.view.BaselineLeftCenterOverrunTableCell;
+import com.vanomaly.superd.view.BaselineRightTableCell;
 import com.vanomaly.superd.view.ThemedStageFactory;
 
 import javafx.application.Platform;
@@ -135,7 +135,7 @@ public class MainWindowController {
                 new Callback<TableColumn<SimpleFileProperty, String>, TableCell<SimpleFileProperty, String>>() {
                     @Override
                     public TableCell<SimpleFileProperty, String> call(TableColumn<SimpleFileProperty, String> t) {
-                        return new BaselineLeftStringCenterOverrunTableCell();
+                        return new BaselineLeftCenterOverrunTableCell();
                     }
                 });
         hashCol.setCellValueFactory(
@@ -145,7 +145,7 @@ public class MainWindowController {
                 new Callback<TableColumn<SimpleFileProperty, String>, TableCell<SimpleFileProperty, String>>() {
                     @Override
                     public TableCell<SimpleFileProperty, String> call(TableColumn<SimpleFileProperty, String> t) {
-                        return new BaselineLeftStringCenterOverrunTableCell();
+                        return new BaselineLeftCenterOverrunTableCell();
                     }
                 });
         sizeCol.setCellValueFactory(
@@ -155,7 +155,7 @@ public class MainWindowController {
                 new Callback<TableColumn<SimpleFileProperty,String>, TableCell<SimpleFileProperty, String>>() {
                     @Override
                     public TableCell<SimpleFileProperty, String> call(TableColumn<SimpleFileProperty, String> t) {
-                        return new BaselineRightStringTableCell();
+                        return new BaselineRightTableCell();
                     }
                 });
         sizeCol.setComparator(new Comparator<String>() {
@@ -175,7 +175,6 @@ public class MainWindowController {
                         destArr[j++] = c;
                     }
                 }
-                System.out.println(new String(destArr, 0, j));
                 return new BigDecimal(new String(destArr, 0, j));
             }
             

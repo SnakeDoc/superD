@@ -17,7 +17,6 @@
 package com.vanomaly.superd.view;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TableCell;
 
 import com.vanomaly.superd.core.SimpleFileProperty;
@@ -26,19 +25,15 @@ import com.vanomaly.superd.core.SimpleFileProperty;
  * @author Jason Sipula
  *
  */
-public class BaselineLeftStringCenterOverrunTableCell extends TableCell<SimpleFileProperty, String> {
-    public BaselineLeftStringCenterOverrunTableCell() {
+public class BaselineRightTableCell extends TableCell<SimpleFileProperty, String> {
+    public BaselineRightTableCell() {
         this(null);
         this.setStyle("-fx-padding: 5px");
-        this.setAlignment(Pos.BASELINE_LEFT);
+        this.setAlignment(Pos.BASELINE_RIGHT);
     }
 
-    public BaselineLeftStringCenterOverrunTableCell(String ellipsisString) {
+    public BaselineRightTableCell(String str) {
         super();
-        setTextOverrun(OverrunStyle.CENTER_ELLIPSIS);
-        if (ellipsisString != null && !"".equals(ellipsisString)) {
-            setEllipsisString(ellipsisString);
-        }  
     }
 
     @Override 
