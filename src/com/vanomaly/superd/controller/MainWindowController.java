@@ -18,6 +18,7 @@ package com.vanomaly.superd.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -161,8 +162,20 @@ public class MainWindowController {
 
             @Override
             public int compare(String arg0, String arg1) {
-                // TODO Auto-generated method stub
-                return 0;
+                return getValue(arg0).compareTo(getValue(arg1));
+            }
+            
+            private BigDecimal getValue(final String str) {
+                char[] origArr = str.toCharArray();
+                char[] destArr = new char[origArr.length];
+                int j = 0;
+                for (int i = 0; i < origArr.length; i++) {
+                    char c = origArr[i];
+                    if (c >= 48 && c <= 57) {
+                        destArr[j++] = c;
+                    }
+                }
+                return new BigDecimal(new String(destArr, 0, j));
             }
             
         });
