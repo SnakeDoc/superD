@@ -26,13 +26,14 @@ import com.vanomaly.superd.core.SimpleFileProperty;
  * @author Jason Sipula
  *
  */
-public class CenteredOverrunStringTableCell extends TableCell<SimpleFileProperty, String> {
-    public CenteredOverrunStringTableCell() {
+public class BaselineLeftStringCenterOverrunTableCell extends TableCell<SimpleFileProperty, String> {
+    public BaselineLeftStringCenterOverrunTableCell() {
         this(null);
-        this.setAlignment(Pos.CENTER);
+        this.setStyle("-fx-padding: 5px");
+        this.setAlignment(Pos.BASELINE_LEFT);
     }
 
-    public CenteredOverrunStringTableCell(String ellipsisString) {
+    public BaselineLeftStringCenterOverrunTableCell(String ellipsisString) {
         super();
         setTextOverrun(OverrunStyle.CENTER_WORD_ELLIPSIS);
         if (ellipsisString != null && !"".equals(ellipsisString)) {

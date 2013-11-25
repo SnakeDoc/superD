@@ -18,19 +18,14 @@ package com.vanomaly.superd.core;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import javafx.application.Platform;
 
 import com.vanomaly.superd.Config;
 import com.vanomaly.superd.controller.MainWindowController;
@@ -57,6 +52,7 @@ public class FileScanner extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attr) {
         try {
+            Thread.sleep(10);
             fis = new FileInputStream(file.toString());
             fc = fis.getChannel();
             b = fc.read(bbf);
@@ -77,17 +73,17 @@ public class FileScanner extends SimpleFileVisitor<Path> {
             //System.out.printf("%-85s | %,.2f KB | %35s\n", file.toString(), 
             //        new BigDecimal(attr.size()).divide(new BigDecimal(1024)).setScale(2, BigDecimal.ROUND_HALF_UP), 
             //        hexString.toString());
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
+            //Platform.runLater(new Runnable() {
+            //    @Override
+            //    public void run() {
                     MainWindowController.getInstance().addTableRow(
                             new SimpleFileProperty(file.toString(), 
-                                    hexString.toString(), 
-                                    Double.parseDouble((new BigDecimal(attr.size())
-                                    .divide(new BigDecimal(1024)).setScale(2, BigDecimal.ROUND_HALF_UP)).toString())));
-                }
-            });
-        } catch (IOException e) {
+                                        hexString.toString(), 
+                                        attr.size()
+                                    ));  
+            //    }
+            //});
+        } catch (InterruptedException | IOException e) {
             return FileVisitResult.CONTINUE;
         }
         return FileVisitResult.CONTINUE;

@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
+import java.util.Comparator;
 import java.util.regex.Pattern;
 
 import net.snakedoc.jutils.ConfigException;
@@ -29,9 +30,11 @@ import net.snakedoc.jutils.ConfigException;
 import com.vanomaly.superd.Config;
 import com.vanomaly.superd.core.FileScanner;
 import com.vanomaly.superd.core.SimpleFileProperty;
-import com.vanomaly.superd.view.CenteredOverrunStringTableCell;
+import com.vanomaly.superd.view.BaselineLeftStringCenterOverrunTableCell;
+import com.vanomaly.superd.view.BaselineRightStringTableCell;
 import com.vanomaly.superd.view.ThemedStageFactory;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -60,7 +63,7 @@ public class MainWindowController {
     @FXML private TableView<SimpleFileProperty> table;
     @FXML private TableColumn<SimpleFileProperty, String> fileCol;
     @FXML private TableColumn<SimpleFileProperty, String> hashCol;
-    @FXML private TableColumn<SimpleFileProperty, Double> sizeCol;
+    @FXML private TableColumn<SimpleFileProperty, String> sizeCol;
     final private ObservableList<SimpleFileProperty> tableData = FXCollections.observableArrayList();
     
     @FXML private Label targetLabel;
@@ -126,7 +129,7 @@ public class MainWindowController {
                 new Callback<TableColumn<SimpleFileProperty, String>, TableCell<SimpleFileProperty, String>>() {
                     @Override
                     public TableCell<SimpleFileProperty, String> call(TableColumn<SimpleFileProperty, String> t) {
-                        return new CenteredOverrunStringTableCell();
+                        return new BaselineLeftStringCenterOverrunTableCell();
                     }
                 });
         hashCol.setCellValueFactory(
@@ -136,17 +139,38 @@ public class MainWindowController {
                 new Callback<TableColumn<SimpleFileProperty, String>, TableCell<SimpleFileProperty, String>>() {
                     @Override
                     public TableCell<SimpleFileProperty, String> call(TableColumn<SimpleFileProperty, String> t) {
-                        return new CenteredOverrunStringTableCell();
+                        return new BaselineLeftStringCenterOverrunTableCell();
                     }
                 });
         sizeCol.setCellValueFactory(
-                new PropertyValueFactory<SimpleFileProperty, Double>("size")
+                new PropertyValueFactory<SimpleFileProperty, String>("size")
         );
+        sizeCol.setCellFactory(
+                new Callback<TableColumn<SimpleFileProperty,String>, TableCell<SimpleFileProperty, String>>() {
+                    @Override
+                    public TableCell<SimpleFileProperty, String> call(TableColumn<SimpleFileProperty, String> t) {
+                        return new BaselineRightStringTableCell();
+                    }
+                });
+        sizeCol.setComparator(new Comparator<String>() {
+
+            @Override
+            public int compare(String arg0, String arg1) {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+            
+        });
         table.setItems(tableData);
     }
     
     public void addTableRow(final SimpleFileProperty data) {
-        tableData.add(data);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                tableData.add(data);
+            }
+        });
         table.scrollTo(tableData.size() + 1);
     }
     

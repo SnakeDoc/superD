@@ -16,7 +16,11 @@
 
 package com.vanomaly.superd.core;
 
-import javafx.beans.property.SimpleDoubleProperty;
+import java.math.BigDecimal;
+
+import com.vanomaly.superd.Config;
+
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
@@ -26,12 +30,16 @@ import javafx.beans.property.SimpleStringProperty;
 public class SimpleFileProperty {
     private final SimpleStringProperty path;
     private final SimpleStringProperty hash;
-    private final SimpleDoubleProperty size;
+    private final SimpleStringProperty size;
     
-    public SimpleFileProperty(final String path, final String hash, final double size) {
+    // for database storage
+    private final SimpleLongProperty fbytes;
+    
+    public SimpleFileProperty(final String path, final String hash, final Long size) {
         this.path = new SimpleStringProperty(path);
         this.hash = new SimpleStringProperty(hash);
-        this.size = new SimpleDoubleProperty(size);
+        this.fbytes = new SimpleLongProperty(size);
+        this.size = new SimpleStringProperty(formatSize(size));
     }
     
     public String getPath() {
@@ -42,8 +50,44 @@ public class SimpleFileProperty {
         return this.hash.get();
     }
     
-    public Double getSize() {
-        return this.size.getValue();
+    public Long getBytes() {
+        return this.fbytes.getValue();
     }
     
+    public String getSize() {
+        return this.size.get();
+    }
+    
+    private String formatSize(final Long size) {
+        return String.format("%,." 
+                + Config.SUPERD.getInteger("file.size.precision") 
+                + "f %s", convertSize(size), Config.SUPERD.getString("file.size.notation"));
+    }
+    
+    private BigDecimal convertSize(final Long size) {
+        switch (Config.SUPERD.getString("file.size.notation")) {
+        
+        case "B":
+            return new BigDecimal(size)
+                .setScale(Config.SUPERD.getInteger("file.size.precision"));
+        case "KB":
+            return new BigDecimal(size).divide(new BigDecimal(1024.00))
+                    .setScale(Config.SUPERD.getInteger("file.size.precision"), BigDecimal.ROUND_HALF_UP);
+        case "MB":
+            return (new BigDecimal(size)
+                .divide(new BigDecimal(1024.00))).divide(new BigDecimal(1024.00))
+                    .setScale(Config.SUPERD.getInteger("file.size.precision"), BigDecimal.ROUND_HALF_UP);
+        case "GB":
+            return ((new BigDecimal(size)
+            .divide(new BigDecimal(1024.00))).divide(new BigDecimal(1024.00)).divide(new BigDecimal(1024.00)))
+                .setScale(Config.SUPERD.getInteger("file.size.precision"), BigDecimal.ROUND_HALF_UP);
+        case "TB":
+            return ((new BigDecimal(size)
+            .divide(new BigDecimal(1024.00))).divide(new BigDecimal(1024.00)).divide(new BigDecimal(1024.00)))
+                .setScale(Config.SUPERD.getInteger("file.size.precision"), BigDecimal.ROUND_HALF_UP);
+        default:
+            return new BigDecimal(size).divide(new BigDecimal(1024.00))
+                    .setScale(Config.SUPERD.getInteger("file.size.precision"), BigDecimal.ROUND_HALF_UP);
+        }
+    }
 }
