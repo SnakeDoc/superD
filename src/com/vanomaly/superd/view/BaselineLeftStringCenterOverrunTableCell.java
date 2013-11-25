@@ -35,7 +35,7 @@ public class BaselineLeftStringCenterOverrunTableCell extends TableCell<SimpleFi
 
     public BaselineLeftStringCenterOverrunTableCell(String ellipsisString) {
         super();
-        setTextOverrun(OverrunStyle.CENTER_WORD_ELLIPSIS);
+        setTextOverrun(OverrunStyle.CENTER_ELLIPSIS);
         if (ellipsisString != null && !"".equals(ellipsisString)) {
             setEllipsisString(ellipsisString);
         }  
