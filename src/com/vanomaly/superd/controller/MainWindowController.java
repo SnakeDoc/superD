@@ -84,6 +84,8 @@ public class MainWindowController {
     private String CURRENT_DELIMITER;
     private String LAST_DELIMITER;
     
+    private int actionButtonSTATE = 0;
+    
     private MainWindowController() {
     }
     
@@ -189,6 +191,15 @@ public class MainWindowController {
             }
         });
         table.scrollTo(tableData.size() + 1);
+    }
+    
+    public void clearTable() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                tableData.clear();
+            }
+        });
     }
     
     private void refreshDelimiter() {
@@ -352,33 +363,52 @@ public class MainWindowController {
     /* actionBUtton */
     @FXML
     public static void handleActionButtonAction(final ActionEvent event) {
-        Task<Integer> task = new Task<Integer>() {
-            @Override
-            protected Integer call() throws Exception {
-                // perform logical action (start, stop, etc)
-                FileScanner fileScanner = null;
-                try {
-                    fileScanner = new FileScanner(MainWindowController.getInstance().getHashAlgo());
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-                String[] dirs = MainWindowController.getInstance().getTargetText()
-                        .split(MainWindowController.getInstance().getDelimiterText());
-                Path[] paths = new Path[dirs.length];
-                for (int i = 0; i < dirs.length; i++) {
-                    paths[i] = Paths.get(dirs[i]);
-                }
-                for (Path path : paths) {
+        MainWindowController.getInstance().updateActionButtonState();
+        if (MainWindowController.getInstance().getActionButtonState() == 1) {
+            //MainWindowController.getInstance().clearTable();
+            Button b = (Button) event.getSource();
+            b.setText("Stop!");
+            Task<Integer> task = new Task<Integer>() {
+                @Override
+                protected Integer call() throws Exception {
+                    // perform logical action (start, stop, etc)
+                    FileScanner fileScanner = null;
                     try {
-                        Files.walkFileTree(path, fileScanner);
-                    } catch (IOException e) {
+                        fileScanner = new FileScanner(MainWindowController.getInstance().getHashAlgo());
+                    } catch (NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     }
+                    String[] dirs = MainWindowController.getInstance().getTargetText()
+                            .split(MainWindowController.getInstance().getDelimiterText());
+                    Path[] paths = new Path[dirs.length];
+                    for (int i = 0; i < dirs.length; i++) {
+                        paths[i] = Paths.get(dirs[i]);
+                    }
+                    for (Path path : paths) {
+                        try {
+                            Files.walkFileTree(path, fileScanner);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return 0;
                 }
-                return 0;
-            }
-        };
-        new Thread(task).start();
+            };
+            new Thread(task).start();
+        } else if (MainWindowController.getInstance().getActionButtonState() == 0) {
+            FileScanner.stop();
+            Button b = (Button) event.getSource();
+            b.setText("Dedupe!");
+        }
+    }
+    
+    private void updateActionButtonState() {
+        if (actionButtonSTATE == 0) actionButtonSTATE++;
+        else actionButtonSTATE--;
+    }
+    
+    private int getActionButtonState() {
+        return actionButtonSTATE;
     }
     
     public void setAndUpdateHashAlgo(final int hashAlgo) throws ConfigException {

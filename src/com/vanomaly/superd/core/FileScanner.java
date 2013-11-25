@@ -38,10 +38,12 @@ public class FileScanner extends SimpleFileVisitor<Path> {
     
     final MessageDigest md;
     final ByteBuffer bbf;
-    FileInputStream fis;
-    FileChannel fc;
-    StringBuilder hexString;
-    int b;
+    private FileInputStream fis;
+    private FileChannel fc;
+    private StringBuilder hexString;
+    private int b;
+    
+    private static boolean interrupted = false;
     
     public FileScanner(final String hashAlgo) throws NoSuchAlgorithmException {
         md = MessageDigest.getInstance(hashAlgo);
@@ -51,8 +53,11 @@ public class FileScanner extends SimpleFileVisitor<Path> {
     // hash all regular files
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attr) {
+        if (FileScanner.interrupted) {
+            return FileVisitResult.TERMINATE;
+        }
         try {
-            Thread.sleep(10);
+            //Thread.sleep(10);
             fis = new FileInputStream(file.toString());
             fc = fis.getChannel();
             b = fc.read(bbf);
@@ -75,7 +80,7 @@ public class FileScanner extends SimpleFileVisitor<Path> {
                             hexString.toString(), 
                             attr.size()
                             ));  
-        } catch (InterruptedException | IOException e) {
+        } catch (IOException e) {
             return FileVisitResult.CONTINUE;
         }
         return FileVisitResult.CONTINUE;
@@ -85,5 +90,9 @@ public class FileScanner extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult visitFileFailed(Path file, IOException e) {
         return FileVisitResult.CONTINUE;
+    }
+    
+    public static void stop() {
+        FileScanner.interrupted = true;
     }
 }
